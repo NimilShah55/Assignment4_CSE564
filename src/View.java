@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -26,11 +27,19 @@ public class View extends JFrame {
      */
     public View() {
         Workspace panel = new Workspace();
-        add(panel);
+        add(panel, BorderLayout.CENTER);
+        add(StatusBar.getInstance(), BorderLayout.SOUTH);
         setTitle("City Map");
         
         JMenuBar menubar = new JMenuBar();
-        JMenu file = new JMenu("File");
+        menubar.add(initFileMenu(panel));
+        menubar.add(initConnectionsMenu(panel));
+        menubar.add(initActionsMenu(panel));
+        setJMenuBar(menubar);
+    }
+    
+    private JMenu initFileMenu(Workspace panel) {
+        JMenu fileMenu = new JMenu("File");
         JMenuItem newItem = new JMenuItem("New");
         newItem.addActionListener(new ActionListener() {
             @Override
@@ -50,15 +59,82 @@ public class View extends JFrame {
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                save(CityModel.getInstance().cities);
+                save(CityDatabase.getInstance().cities);
             }
         });
-        file.add(newItem);
-        file.add(saveItem);
-        file.add(loadItem);
-        menubar.add(file);
-        setJMenuBar(menubar);
+        fileMenu.add(newItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(loadItem);
+        return fileMenu;
     }
+
+    private JMenu initConnectionsMenu(Workspace panel) {
+        JMenu connMenu = new JMenu("Connections");
+        JMenuItem optTSPGreedy = new JMenuItem("TSP Nearest Neighbor");
+        optTSPGreedy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setConnectionState(Workspace.ConnectionMode.TSP_GREEDY);
+            }
+        });
+        JMenuItem optTSPBrute = new JMenuItem("TSP Pro");
+        optTSPBrute.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setConnectionState(Workspace.ConnectionMode.TSP_PRO);
+            }
+        });
+        JMenuItem optCluster = new JMenuItem("Clusters");
+        optCluster.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setConnectionState(Workspace.ConnectionMode.CLUSTERS);
+            }
+        });
+        JMenuItem optUserConn = new JMenuItem("User Connect");
+        optUserConn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+            }
+        });
+        connMenu.add(optTSPGreedy);
+        connMenu.add(optTSPBrute);
+        connMenu.add(optCluster);
+        connMenu.add(optUserConn);
+        return connMenu;
+    }
+    
+    private JMenu initActionsMenu(Workspace panel) {
+        JMenu actionsMenu = new JMenu("Actions");
+        JMenuItem optMove = new JMenuItem("Move");
+        optMove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setActionState(Workspace.ActionMode.MOVE);
+            }
+        });
+        JMenuItem optConnect = new JMenuItem("Connect");
+        optConnect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                panel.setActionState(Workspace.ActionMode.CONNECT);
+            }
+        });
+        JMenuItem optCreate = new JMenuItem("Create");
+        optCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.setActionState(Workspace.ActionMode.CREATE);
+            }
+        });
+        actionsMenu.add(optMove);
+        actionsMenu.add(optConnect);
+        actionsMenu.add(optCreate);
+        return actionsMenu;
+    }
+    
     
     /**
      * Loads the selected file with TSP
@@ -138,7 +214,7 @@ public class View extends JFrame {
             int y = (int)Double.parseDouble(coords[1]);
             int x = (int)Double.parseDouble(coords[2]);
             String name = coords.length > 3 ? coords[3] : "";
-            CityModel.getInstance().createCity(x, y, name);
+            CityDatabase.getInstance().createCity(x, y, name);
         } while (!text.startsWith("EOF"));
     }
     

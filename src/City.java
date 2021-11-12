@@ -1,4 +1,3 @@
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -10,7 +9,7 @@ public class City {
     
     public Rectangle bounds;
     public final String name;
-    private static final int SIZE = 10;
+    private static final int SIZE = 16;
     
     /**
      * Constructs City instance.

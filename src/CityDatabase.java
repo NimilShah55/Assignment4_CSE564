@@ -1,6 +1,6 @@
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,26 +8,25 @@ import java.util.Map;
  * A collection of cities that allows data manipulation and drawing.
  * @author Nate Robinson
  */
-public class CityModel {
-    private static CityModel instance = null;
+public class CityDatabase {
+    private static CityDatabase instance = null;
 
-    private CityModel() {
+    private CityDatabase() {
         cities = new ArrayList<>();
-        pather = new PathGenerator();
+        paths = new HashMap<>();
     }
 
-    final PathGenerator pather;
     final List<City> cities;
-    Map<City, City> paths = null;
+    final Map<City, City> paths;
     City selected = null;
 
     /**
-     * Instantiates CityModel.
-     * @return Sole instance of the CityModel.
+     * Instantiates CityDatabase.
+     * @return Sole instance of the CityDatabase.
      */
-    public static CityModel getInstance() {
+    public static CityDatabase getInstance() {
         if (instance == null) {
-            instance = new CityModel();
+            instance = new CityDatabase();
         }
         return instance;
     }
@@ -41,9 +40,8 @@ public class CityModel {
      */
     public void createCity(int x, int y, String name) {
         cities.add(new City(x, y, name));
-        pather.run();
     }
-
+    
     /**
      * Adds cities to the collection
      * @param newCities Non-empty list of cities to add
@@ -51,7 +49,6 @@ public class CityModel {
     public void addCities(City[] newCities) {
         if (newCities != null) return;
         cities.addAll(Arrays.asList(newCities));
-        pather.run();
     }
 
     /**
@@ -59,15 +56,22 @@ public class CityModel {
      */
     public void clear() {
         cities.clear();
-        paths = null;
+        paths.clear();
+    }
+    
+    /**
+     * Reset paths.
+     */
+    public void clearConnections() {
+        paths.clear();
     }
 
     /**
      * Set the paths to draw.
      * @param connections Paths between cities as map entries
      */
-    public void setConnections(Map<City, City> connections) {
-        this.paths = connections;
+    public void addConnections(Map<City, City> connections) {
+        this.paths.putAll(connections);
     }
     
     /**
@@ -86,21 +90,13 @@ public class CityModel {
     }
     
     /**
-     * Set the selected city for moving.
-     * @param selected Selected city
-     */
-    public void setSelected(City selected) {
-        this.selected = selected;
-    }
-    
-    /**
-     * Move selected city if any is selected.
+     * Move given city if not null.
+     * @param city City to move
      * @param x The X location of the city
      * @param y The Y location of the city
      */
-    public void moveSelectedCity(int x, int y) {
-        if (selected == null) return;
-        selected.move(x, y);
-        pather.run();
+    public void moveCity(City city, int x, int y) {
+        if (city == null) return;
+        city.move(x, y);
     }
 }
