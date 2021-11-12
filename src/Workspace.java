@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
@@ -18,12 +20,22 @@ import javax.swing.JTextField;
  */
 public class Workspace extends JPanel implements MouseListener, 
         MouseMotionListener, IObserver {
-    
+
     int preX, preY;
-    boolean pressOut = false;
     boolean isAddingCity = false;
     private City selected = null;
     final NewCityHandler newCityHandler;
+    
+    public enum ActionMode {
+        CREATE, MOVE, CONNECT
+    }
+    
+    public enum ConnectionMode {
+        TSP_GREEDY, TSP_PRO, CLUSTERS, USER_CONNECT
+    }
+    
+    ActionMode actionModeState = ActionMode.CREATE;
+    ConnectionMode connectionModeState = ConnectionMode.TSP_GREEDY;
 
     /**
      * Instantiates Workspace.
@@ -36,9 +48,28 @@ public class Workspace extends JPanel implements MouseListener,
     }
     
     /**
+     * Set the action mode state that decides how to handle mouse events.
+     * @param mode ActionMode to set state to.
+     */
+    public void setActionState(ActionMode mode) {
+        selected = null;
+        actionModeState = mode;
+    }
+    
+    /**
+     * Set the connection mode state that decides how to connect cities.
+     * @param mode ConnectionMode to set state to.
+     */
+    public void setConnectionState(ConnectionMode mode) {
+        selected = null;
+        connectionModeState = mode;
+    }
+    
+    /**
      * Clear collection of cities and repaint.
      */
     public void reset() {
+        selected = null;
         CityDatabase.getInstance().clear();
         StatusBar.getInstance().setStatus("Cities cleared.");
         repaint();
@@ -104,39 +135,72 @@ public class Workspace extends JPanel implements MouseListener,
     public void mouseClicked(MouseEvent e) {}
 
     /**
-     * Create a city if empty spot, otherwise select and move city.
+     * CREATE a city if empty spot, otherwise select and move city.
      * @param e Used to get the location of the mouse
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        selected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
-        
-        if (selected == null) {
-            if (!isAddingCity) {
-                isAddingCity = true;
-                newCityHandler.promptAt(e.getX(), e.getY());
-            }
-        } else {
-            preX = (int)(selected.getX() - e.getX());
-            preY = (int)(selected.getY() - e.getY());
-            CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
-            repaint();
+        switch (actionModeState) {
+            case CONNECT:
+                if (selected != null) {
+                    // if city already selected, create a path to clicked city
+                    City selected2 = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+                    if (selected2 != null) {
+                        preX = (int)(selected.getX() - e.getX());
+                        preY = (int)(selected.getY() - e.getY());
+                        CityDatabase.getInstance().addConnections(
+                                Collections.singletonMap(selected, selected2));
+                        repaint();
+                    }
+                    // reset store of first city, if successful or null click
+                    selected = null;
+                } else {
+                    // else select initial city to link next city to
+                    selected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+                    if (selected != null) {
+                        preX = (int)(selected.getX() - e.getX());
+                        preY = (int)(selected.getY() - e.getY());
+                        CityDatabase.getInstance().moveCity(selected, 
+                                preX + e.getX(), preY + e.getY());
+                        repaint();
+                    }
+                }
+                break;
+            case CREATE:
+                if (!isAddingCity) {
+                    isAddingCity = true;
+                    NewCityHandler handler = new NewCityHandler();
+                    handler.promptAt(e.getX(), e.getY());
+                }
+                break;
+            case MOVE:
+                selected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+                if (selected != null) {
+                    preX = (int)(selected.getX() - e.getX());
+                    preY = (int)(selected.getY() - e.getY());
+                    CityDatabase.getInstance().moveCity(selected, 
+                            preX + e.getX(), preY + e.getY());
+                    repaint();
+                }
+                break;
         }
     }
 
     /**
-     * Move the city to location of mouse release.
+     * MOVE the city to location of mouse release.
      * @param e Used to get the location of the mouse
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        selected = CityDatabase.getInstance().findCityAt(e.getX(), getY());
+        if (actionModeState == ActionMode.MOVE) {
+            selected = CityDatabase.getInstance().findCityAt(e.getX(), getY());
 
-        if (selected != null) {
-            CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
-            repaint();
-        } else {
-            StatusBar.getInstance().setStatus("City moved.");
+            if (selected != null) {
+                CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
+                repaint();
+            }
+            StatusBar.getInstance().setStatus("[MOVE] Placed city at new location: " 
+                    + (preX + e.getX()) + ", " + (preY + e.getY()));
         }
     }
 
@@ -161,9 +225,8 @@ public class Workspace extends JPanel implements MouseListener,
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(!pressOut) {
+        if(actionModeState == ActionMode.MOVE && selected != null) {
             CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
-            StatusBar.getInstance().setStatus("Dragging city.");
             repaint();
         }
     }

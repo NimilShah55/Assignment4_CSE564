@@ -65,7 +65,8 @@ public class PathGenerator extends Observable implements Runnable {
     public void run() {
         List<City> cities = CityDatabase.getInstance().cities;
         Map<City, City> paths = runTravelingSalesman(cities);
-        CityDatabase.getInstance().setConnections(paths);
+        CityDatabase.getInstance().clearConnections();
+        CityDatabase.getInstance().addConnections(paths);
         sendNotifications(null);
     }
 }

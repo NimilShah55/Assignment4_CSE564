@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +13,11 @@ public class CityDatabase {
 
     private CityDatabase() {
         cities = new ArrayList<>();
+        paths = new HashMap<>();
     }
 
     final List<City> cities;
-    Map<City, City> paths = null;
+    final Map<City, City> paths;
     City selected = null;
 
     /**
@@ -54,15 +56,22 @@ public class CityDatabase {
      */
     public void clear() {
         cities.clear();
-        paths = null;
+        paths.clear();
+    }
+    
+    /**
+     * Reset paths.
+     */
+    public void clearConnections() {
+        paths.clear();
     }
 
     /**
      * Set the paths to draw.
      * @param connections Paths between cities as map entries
      */
-    public void setConnections(Map<City, City> connections) {
-        this.paths = connections;
+    public void addConnections(Map<City, City> connections) {
+        this.paths.putAll(connections);
     }
     
     /**
