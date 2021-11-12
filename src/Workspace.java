@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
@@ -54,6 +53,7 @@ public class Workspace extends JPanel implements MouseListener,
     public void setActionState(ActionMode mode) {
         selected = null;
         actionModeState = mode;
+        StatusBar.getInstance().setStatus("Action Mode changed to: " + mode.name());
     }
     
     /**
@@ -63,6 +63,7 @@ public class Workspace extends JPanel implements MouseListener,
     public void setConnectionState(ConnectionMode mode) {
         selected = null;
         connectionModeState = mode;
+        StatusBar.getInstance().setStatus("Connection Mode changed to: " + mode.name());
     }
     
     /**
@@ -143,16 +144,23 @@ public class Workspace extends JPanel implements MouseListener,
         switch (actionModeState) {
             case CONNECT:
                 if (selected != null) {
-                    // if city already selected, create a path to clicked city
+                    // if a city is already selected and another is sequentially
+                    // selected, create a path between them.
                     City selected2 = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
                     if (selected2 != null) {
                         preX = (int)(selected.getX() - e.getX());
                         preY = (int)(selected.getY() - e.getY());
                         CityDatabase.getInstance().addConnections(
                                 Collections.singletonMap(selected, selected2));
+                        StatusBar.getInstance().setStatus("Connection created between City " 
+                                + selected.name + " and " + selected2.name + ".");
                         repaint();
+                    } else {
+                        StatusBar.getInstance().setStatus("No city selected. " 
+                                + "Click a city to start a connection.");
                     }
-                    // reset store of first city, if successful or null click
+                    // reset store of first city, successful or not (e.g. 
+                    // empty-space click)
                     selected = null;
                 } else {
                     // else select initial city to link next city to
@@ -162,6 +170,8 @@ public class Workspace extends JPanel implements MouseListener,
                         preY = (int)(selected.getY() - e.getY());
                         CityDatabase.getInstance().moveCity(selected, 
                                 preX + e.getX(), preY + e.getY());
+                        StatusBar.getInstance().setStatus("City link started with City " 
+                                + selected.name + ".");
                         repaint();
                     }
                 }
@@ -180,6 +190,7 @@ public class Workspace extends JPanel implements MouseListener,
                     preY = (int)(selected.getY() - e.getY());
                     CityDatabase.getInstance().moveCity(selected, 
                             preX + e.getX(), preY + e.getY());
+                    StatusBar.getInstance().setStatus("City " + selected.name + " selected to move.");
                     repaint();
                 }
                 break;
@@ -279,6 +290,7 @@ public class Workspace extends JPanel implements MouseListener,
             pendingNameField.setVisible(false);
             String name = e.getActionCommand();
             CityDatabase.getInstance().createCity(x, y, name);
+            StatusBar.getInstance().setStatus("New city " + name + " created.");
             isAddingCity = false;
             repaint();
         }
