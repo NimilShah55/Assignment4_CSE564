@@ -50,7 +50,7 @@ public class View extends JFrame {
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                save(CityModel.getInstance().cities);
+                save(CityDatabase.getInstance().cities);
             }
         });
         file.add(newItem);
@@ -138,7 +138,7 @@ public class View extends JFrame {
             int y = (int)Double.parseDouble(coords[1]);
             int x = (int)Double.parseDouble(coords[2]);
             String name = coords.length > 3 ? coords[3] : "";
-            CityModel.getInstance().createCity(x, y, name);
+            CityDatabase.getInstance().createCity(x, y, name);
         } while (!text.startsWith("EOF"));
     }
     

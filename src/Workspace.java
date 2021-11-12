@@ -22,6 +22,7 @@ public class Workspace extends JPanel implements MouseListener,
     int preX, preY;
     boolean pressOut = false;
     boolean isAddingCity = false;
+    private City selected = null;
     final NewCityHandler newCityHandler;
 
     /**
@@ -38,7 +39,7 @@ public class Workspace extends JPanel implements MouseListener,
      * Clear collection of cities and repaint.
      */
     public void reset() {
-        CityModel.getInstance().clear();
+        CityDatabase.getInstance().clear();
         repaint();
     }
     
@@ -47,7 +48,7 @@ public class Workspace extends JPanel implements MouseListener,
      * @param newCities Cities to load.
      */
     public void loadCities(City[] newCities) {
-        CityModel.getInstance().addCities(newCities);
+        CityDatabase.getInstance().addCities(newCities);
         repaint();
     }
     
@@ -59,8 +60,8 @@ public class Workspace extends JPanel implements MouseListener,
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
-        List<City> cities = CityModel.getInstance().cities;
-        Map<City,City> paths = CityModel.getInstance().paths;
+        List<City> cities = CityDatabase.getInstance().cities;
+        Map<City,City> paths = CityDatabase.getInstance().paths;
         
         Color prevColor = g.getColor();
         paintCities(g2, cities);
@@ -106,18 +107,17 @@ public class Workspace extends JPanel implements MouseListener,
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        City clickedCity = CityModel.getInstance().findCityAt(e.getX(), e.getY());
-        CityModel.getInstance().setSelected(clickedCity);
+        selected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
         
-        if (clickedCity == null) {
+        if (selected == null) {
             if (!isAddingCity) {
                 isAddingCity = true;
                 newCityHandler.promptAt(e.getX(), e.getY());
             }
         } else {
-            preX = (int)(clickedCity.getX() - e.getX());
-            preY = (int)(clickedCity.getY() - e.getY());
-            CityModel.getInstance().moveSelectedCity(preX + e.getX(), preY + e.getY());
+            preX = (int)(selected.getX() - e.getX());
+            preY = (int)(selected.getY() - e.getY());
+            CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
             repaint();
         }
     }
@@ -128,11 +128,10 @@ public class Workspace extends JPanel implements MouseListener,
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        City selected = CityModel.getInstance().findCityAt(e.getX(), getY());
-        CityModel.getInstance().setSelected(selected);
+        selected = CityDatabase.getInstance().findCityAt(e.getX(), getY());
 
         if (selected != null) {
-            CityModel.getInstance().moveSelectedCity(preX + e.getX(), preY + e.getY());
+            CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
 //            selected.move(preX + e.getX(), preY + e.getY());
             repaint();
         }
@@ -160,8 +159,7 @@ public class Workspace extends JPanel implements MouseListener,
     @Override
     public void mouseDragged(MouseEvent e) {
         if(!pressOut) {
-            CityModel.getInstance().moveSelectedCity(preX + e.getX(),
-                    preY + e.getY());
+            CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
             repaint();
         }
     }
@@ -213,7 +211,7 @@ public class Workspace extends JPanel implements MouseListener,
         public void actionPerformed(ActionEvent e) {
             pendingNameField.setVisible(false);
             String name = e.getActionCommand();
-            CityModel.getInstance().createCity(x, y, name);
+            CityDatabase.getInstance().createCity(x, y, name);
             isAddingCity = false;
             repaint();
         }
