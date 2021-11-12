@@ -112,7 +112,7 @@ public class Workspace extends JPanel implements MouseListener,
             g.setColor(Color.WHITE);
             g.fillRect(x + 1, y + 1, w - 1, h - 1);
             g.setColor(Color.BLACK);
-            g.setFont(new Font("Courier", Font.PLAIN, 12));
+            g.setFont(new Font("Courier", Font.PLAIN, 14));
             g.drawString(city.name, x + w, y);
         }
     }
@@ -264,7 +264,7 @@ public class Workspace extends JPanel implements MouseListener,
         
         private NewCityHandler() {
             this.pendingNameField = new JTextField();
-            pendingNameField.setFont(new Font("Courier", Font.PLAIN, 12));
+            pendingNameField.setFont(new Font("Courier", Font.PLAIN, 16));
             pendingNameField.setVisible(false);
             pendingNameField.addActionListener(this);
             Workspace.this.add(pendingNameField);
@@ -275,7 +275,7 @@ public class Workspace extends JPanel implements MouseListener,
             this.y = y;
             isAddingCity = true;
             pendingNameField.setText("");
-            pendingNameField.setBounds(x, y, 60, 20);
+            pendingNameField.setBounds(x, y, 60, 25);
             pendingNameField.setVisible(true);
             pendingNameField.requestFocus();
             
