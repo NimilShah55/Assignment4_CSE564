@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -26,7 +27,8 @@ public class View extends JFrame {
      */
     public View() {
         Workspace panel = new Workspace();
-        add(panel);
+        add(panel, BorderLayout.CENTER);
+        add(StatusBar.getInstance(), BorderLayout.SOUTH);
         setTitle("City Map");
         
         JMenuBar menubar = new JMenuBar();

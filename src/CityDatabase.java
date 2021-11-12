@@ -37,7 +37,7 @@ public class CityDatabase {
      * @param name The name of the city
      */
     public void createCity(int x, int y, String name) {
-        // run factory
+        cities.add(new City(x, y, name));
     }
     
     /**

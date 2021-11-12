@@ -40,6 +40,7 @@ public class Workspace extends JPanel implements MouseListener,
      */
     public void reset() {
         CityDatabase.getInstance().clear();
+        StatusBar.getInstance().setStatus("Cities cleared.");
         repaint();
     }
     
@@ -49,6 +50,7 @@ public class Workspace extends JPanel implements MouseListener,
      */
     public void loadCities(City[] newCities) {
         CityDatabase.getInstance().addCities(newCities);
+        StatusBar.getInstance().setStatus("New cities loaded.");
         repaint();
     }
     
@@ -132,8 +134,9 @@ public class Workspace extends JPanel implements MouseListener,
 
         if (selected != null) {
             CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
-//            selected.move(preX + e.getX(), preY + e.getY());
             repaint();
+        } else {
+            StatusBar.getInstance().setStatus("City moved.");
         }
     }
 
@@ -160,6 +163,7 @@ public class Workspace extends JPanel implements MouseListener,
     public void mouseDragged(MouseEvent e) {
         if(!pressOut) {
             CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
+            StatusBar.getInstance().setStatus("Dragging city.");
             repaint();
         }
     }
