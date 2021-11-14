@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public class CircleCity extends CityDecorator{
@@ -61,5 +62,9 @@ public class CircleCity extends CityDecorator{
     public int getY() {
         return super.getY();
     }
-
+    
+    @Override
+    public Point center() {
+        return super.center();
+    }
 }

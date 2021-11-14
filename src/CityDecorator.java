@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 
 public abstract class CityDecorator extends City{
     
@@ -52,5 +53,10 @@ public abstract class CityDecorator extends City{
             return city.getY();
         }
         return 0;
+    }
+    
+    @Override
+    public Point center() {
+        return city.center();
     }
 }

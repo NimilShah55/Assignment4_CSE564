@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public class CrossCity extends CityDecorator{
@@ -85,5 +86,10 @@ public class CrossCity extends CityDecorator{
     @Override
     public int getY() {
         return super.getY();
+    }
+    
+    @Override
+    public Point center() {
+        return super.center();
     }
 }

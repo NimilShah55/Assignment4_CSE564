@@ -286,10 +286,10 @@ public class Workspace extends JPanel implements MouseListener,
             squareFrame = new JFrame();
             circleFrame = new JFrame();
             String[] selection = {
-                    "cross",
-                    "circle",
-                    "square",
-                    "cross and circle"
+                    "base is a square",
+                    "base with cross",
+                    "base with circle",
+                    "base with cross and circle"
             };
             type = new JComboBox<String>(selection);
             this.name = new JTextField();
@@ -362,17 +362,17 @@ public class Workspace extends JPanel implements MouseListener,
             popup.setVisible(false);
             City created = new BaseCity(x, y, name.getText(), squareColor, size.getText());
             switch((String)type.getSelectedItem()) {
-              case "cross":
+              case "base with cross":
                   CrossCity cross = new CrossCity(x, y, name.getText(), squareColor, size.getText());
                   cross.setCity(created);
                   CityDatabase.getInstance().swapInstance(change, cross);
                   break;
-              case "circle":
+              case "base with circle":
                   CircleCity circle = new CircleCity(x, y, name.getText(), circleColor, size.getText());
                   circle.setCity(created);
                   CityDatabase.getInstance().swapInstance(change, circle);
                   break;
-              case "cross and circle":
+              case "base with cross and circle":
                   CrossCity cross2 = new CrossCity(x, y, name.getText(), squareColor, size.getText());
                   cross2.setCity(created);
                   CircleCity circle2 = new CircleCity(x, y, name.getText(), circleColor, size.getText());
