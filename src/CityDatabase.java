@@ -39,25 +39,18 @@ public class CityDatabase {
      * @param y The Y location of the city
      * @param name The name of the city
      */
-    public void createCity(int x, int y, String name, Color selected, String size, String type) {
-        switch(type) {
-          case "cross":
-              BaseCity center = new BaseCity(x, y, name, selected, size);
-              CrossCity city = new CrossCity(x, y, name, selected, size);
-              city.setCity(center);
-              cities.add(city);
-              break;
-          case "circle":
-              break;
-          case "cross and circle":
-              break;
-          case "square":
-              cities.add(new BaseCity(x, y, name, selected, size));
-              break;
-          case "":
-              break;
+    public void createCity(int x, int y, String name, Color selected, String size) {
+        cities.add(new BaseCity(x, y, name, selected, size));
+    }
+    
+    public void swapInstance(City change, City created) {
+        int i = 0;
+        for (City city : cities) {
+            if (city == change) {
+                cities.set(i, created);
+            }
+            i++;
         }
-        
     }
     
     /**

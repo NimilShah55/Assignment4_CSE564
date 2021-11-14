@@ -71,4 +71,19 @@ public class CrossCity extends CityDecorator{
             return false;
         }
     }
+    /**
+     * @return x location of city
+     */
+    @Override
+    public int getX() {
+        return super.getX();
+    }
+
+    /**
+     * @return y location of city
+     */
+    @Override
+    public int getY() {
+        return super.getY();
+    }
 }

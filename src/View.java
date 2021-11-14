@@ -215,7 +215,7 @@ public class View extends JFrame {
             int y = (int)Double.parseDouble(coords[1]);
             int x = (int)Double.parseDouble(coords[2]);
             String name = coords.length > 3 ? coords[3] : "";
-            CityDatabase.getInstance().createCity(x, y, name, new Color(1), "", "");
+            CityDatabase.getInstance().createCity(x, y, name, new Color(1), "");
         } while (!text.startsWith("EOF"));
     }
     

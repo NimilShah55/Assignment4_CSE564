@@ -31,4 +31,26 @@ public abstract class CityDecorator extends City{
         }
         return false;
     }
+    
+    /**
+     * @return x location of city
+     */
+    @Override
+    public int getX() {
+        if(city != null) {
+            return city.getX();
+        }
+        return 0;
+    }
+
+    /**
+     * @return y location of city
+     */
+    @Override
+    public int getY() {
+        if(city != null) {
+            return city.getY();
+        }
+        return 0;
+    }
 }

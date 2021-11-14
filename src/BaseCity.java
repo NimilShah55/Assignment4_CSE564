@@ -19,12 +19,4 @@ public class BaseCity extends City{
         g.setFont(new Font("Courier", Font.PLAIN, 14));
         g.drawString(name, bounds.x + bounds.width, bounds.y);
     }
-    @Override
-    public boolean contains(int x, int y) {
-        return bounds.contains(x, y);
-    }
-    @Override
-    public void move(int x, int y) {
-        super.move(x, y);
-    }
 }

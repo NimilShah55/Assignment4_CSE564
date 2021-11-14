@@ -133,7 +133,12 @@ public class Workspace extends JPanel implements MouseListener,
      * @param e ActionEvent, unused
      */
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+        if(e.getClickCount() == 2) {
+            City select = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+            new EditCityHandler(select);
+        }
+    }
 
     /**
      * CREATE a city if empty spot, otherwise select and move city.
@@ -177,10 +182,13 @@ public class Workspace extends JPanel implements MouseListener,
                 }
                 break;
             case CREATE:
-                if (!isAddingCity) {
-                    isAddingCity = true;
-                    NewCityHandler handler = new NewCityHandler();
-                    handler.prompt(e.getX(),e.getY());
+                selected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+                if(selected == null) {
+                   if (!isAddingCity) {
+                       isAddingCity = true;
+                       NewCityHandler handler = new NewCityHandler();
+                       handler.promptAt(e.getX(),e.getY());
+                   }
                 }
                 break;
             case MOVE:
@@ -257,17 +265,20 @@ public class Workspace extends JPanel implements MouseListener,
     public void update(Object ob) {
         repaint();
     }
-
-    private class NewCityHandler implements ActionListener {
+    
+    private class EditCityHandler implements ActionListener {
         int x, y;
-        final JTextField pendingNameField;
+        final JTextField name;
         final JTextField size;
         Color colorSelected;
         JComboBox<String> type;
         JFrame popup;
         JFrame colorFrame;
-        
-        private NewCityHandler() {
+        City change;
+        private EditCityHandler(City change) {
+            x = change.getX();
+            y = change.getY();
+            this.change = change;
             this.colorSelected = new Color(0);
             colorFrame = new JFrame();
             String[] selection = {
@@ -277,9 +288,9 @@ public class Workspace extends JPanel implements MouseListener,
                     ""
             };
             type = new JComboBox<String>(selection);
-            this.pendingNameField = new JTextField();
+            this.name = new JTextField();
             this.size = new JTextField();
-            pendingNameField.setFont(new Font("Courier", Font.PLAIN, 16));
+            name.setFont(new Font("Courier", Font.PLAIN, 16));
             size.setFont(new Font("Courier", Font.PLAIN, 16));
             popup = new JFrame();
             popup.setLayout(new GridLayout(4, 2));
@@ -306,21 +317,66 @@ public class Workspace extends JPanel implements MouseListener,
             Button ok = new Button("ok");
             ok.addActionListener(this);
             popup.add(new Label("Name: "));
-            popup.add(pendingNameField);
+            popup.add(name);
             popup.add(new Label("Size: "));
             popup.add(size);
             popup.add(type);
             popup.add(chooseColor);
             popup.add(ok);
+            name.setText("");
+            popup.setVisible(true);
+            popup.requestFocus();
+        }
+        /**
+         * Edit the city double clicked on
+         * @param e ActionEvent event on the ok button
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            popup.setVisible(false);
+            City created = new BaseCity(x, y, name.getText(), colorSelected, size.getText());
+            switch((String)type.getSelectedItem()) {
+              case "cross":
+                  BaseCity center = new BaseCity(x, y, name.getText(), colorSelected, size.getText());
+                  CrossCity city = new CrossCity(x, y, name.getText(), colorSelected, size.getText());
+                  city.setCity(center);
+                  created = city;
+                  break;
+              case "circle":
+                  break;
+              case "cross and circle":
+                  break;
+              default:
+                  created = new BaseCity(x, y, name.getText(), colorSelected, size.getText());
+                  break;
+            }
+            CityDatabase.getInstance().swapInstance(change, created);
+            StatusBar.getInstance().setStatus("City " + name + " edited.");
+            repaint();
+        }
+    }
+    
+    private class NewCityHandler implements ActionListener {
+        int x, y;
+        final JTextField pendingNameField;
+        
+        private NewCityHandler() {
+            this.pendingNameField = new JTextField();
+            pendingNameField.setFont(new Font("Courier", Font.PLAIN, 16));
+            pendingNameField.setVisible(false);
+            pendingNameField.addActionListener(this);
+            Workspace.this.add(pendingNameField);
         }
         
-        private void prompt(int x, int y) {
+        private void promptAt(int x, int y) {
             this.x = x;
             this.y = y;
             isAddingCity = true;
             pendingNameField.setText("");
-            popup.setVisible(true);
-            popup.requestFocus();
+            pendingNameField.setBounds(x, y, 60, 25);
+            pendingNameField.setVisible(true);
+            pendingNameField.requestFocus();
+            
         }
 
         /**
@@ -329,9 +385,9 @@ public class Workspace extends JPanel implements MouseListener,
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            popup.setVisible(false);
-            String name = pendingNameField.getText();
-            CityDatabase.getInstance().createCity(x, y, name, colorSelected, size.getText(), (String)type.getSelectedItem());
+            pendingNameField.setVisible(false);
+            String name = e.getActionCommand();
+            CityDatabase.getInstance().createCity(x, y, name, Color.BLACK, "");
             StatusBar.getInstance().setStatus("New city " + name + " created.");
             isAddingCity = false;
             repaint();
