@@ -24,7 +24,7 @@ public class Cluster extends Strategy {
     }
 
     /**
-     * Invokes the k-means clustering solution.
+     * Invokes the k-means clustering algorithm.
      * @param cities List of cities to map
      * @return Paths between cities as a map
      */
@@ -148,9 +148,15 @@ public class Cluster extends Strategy {
         return centers;
     }
 
+
+    /**
+     * Run the clustering algorithm to find the three clusters.
+     * @param cityDB The CityDatabase singleton object that will be updated.
+     */
     @Override
-    public void createPath() {
-        CityDatabase cityDB = CityDatabase.getInstance();
-        cityDB.addConnections(runClustering(cityDB.cities));
+    public void createPath(CityDatabase cityDB) {
+        Map<City, City> path = runClustering(cityDB.cities);
+        if(path != null)
+            cityDB.addConnections(path);
     }
 }

@@ -14,12 +14,12 @@ public class BruteForcePath extends Strategy{
 
 
     /**
-     * Invokes the brute force tsp solution.
+     * Invokes the brute force tsp algorithm.
      * @param cities List of cities that will be visited and mapped.
      * @return Guaranteed best paths between cities as a map
      */
     public Map<City, City> runBruteForcePath(List<City> cities) {
-        if (cities == null || cities.size() < 2 )
+        if(cities == null || cities.size() < 2)
             return null;
         Map<City, City> path = new HashMap<>();
         City firstCity = cities.get(0);
@@ -56,7 +56,7 @@ public class BruteForcePath extends Strategy{
     }
 
 
-    private Map<City, City> recursiveBruteForceHelper(java.util.List<City> cities,
+    private Map<City, City> recursiveBruteForceHelper(List<City> cities,
                                                      Map<City, City> path,
                                                      City firstCity,
                                                      City currentCity) {
@@ -89,10 +89,14 @@ public class BruteForcePath extends Strategy{
         return bestPath;
     }
 
-
+    /**
+     * Run the brute force algorithm to find the optimal path.
+     * @param cityDB The CityDatabase singleton object that will be updated.
+     */
     @Override
-    public void createPath() {
-        CityDatabase cityDB = CityDatabase.getInstance();
-        cityDB.addConnections(runBruteForcePath(cityDB.cities));
+    public void createPath(CityDatabase cityDB) {
+        Map<City, City> path = runBruteForcePath(cityDB.cities);
+        if(path != null)
+            cityDB.addConnections(path);
     }
 }

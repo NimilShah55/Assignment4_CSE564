@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Class that generates TSP paths on update.
- * @author Nate Robinson
+ * @author Nate Robinson, Dustin Howarth
  */
 public class PathGenerator extends Strategy {
     
@@ -48,6 +48,8 @@ public class PathGenerator extends Strategy {
         System.out.println(distance);
         return paths;
     }
+
+
     private double calculatePathDistance(Map<City, City> path) {
         double totalDistance = 0;
         for (Map.Entry<City, City> pair : path.entrySet()) {
@@ -55,6 +57,8 @@ public class PathGenerator extends Strategy {
         }
         return totalDistance;
     }
+
+
     /**
      * Uses basic distance function to create the hypotenuse between two cities.
      * @param cityA The first city
@@ -69,18 +73,16 @@ public class PathGenerator extends Strategy {
         return Math.sqrt(Math.pow(cityA.getX() - cityB.getX(), 2) +
                 Math.pow(cityA.getY() - cityB.getY(), 2));
     }
-    
-    @Override
-    public void run() {
-        List<City> cities = CityDatabase.getInstance().cities;
-        Map<City, City> paths = runTravelingSalesman(cities);
-        CityDatabase.getInstance().clearConnections();
-        CityDatabase.getInstance().addConnections(paths);
-    }
 
+
+    /**
+     * Run the greedy TSP algorithm to find a potentially optimal path.
+     * @param cityDB The CityDatabase singleton object that will be updated.
+     */
     @Override
-    public void createPath() {
-        CityDatabase cityDB = CityDatabase.getInstance();
-        cityDB.addConnections(runTravelingSalesman(cityDB.cities));
+    public void createPath(CityDatabase cityDB) {
+        Map<City, City> path = runTravelingSalesman(cityDB.cities);
+        if(path != null)
+            cityDB.addConnections(path);
     }
 }

@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 /**
  * GUI panel that handles mouse events and interactions with the cities.
- * @author Nate Robinson
+ * @author Nate Robinson, Dustin Howarth
  */
 public class Workspace extends JPanel implements MouseListener, 
         MouseMotionListener, IObserver {
@@ -25,6 +25,7 @@ public class Workspace extends JPanel implements MouseListener,
     private City selected = null;
     final NewCityHandler newCityHandler;
     public Strategy strategy = new PathGenerator();
+    private Thread thread = new Thread(strategy);
     
     public enum ActionMode {
         CREATE, MOVE, CONNECT
@@ -36,7 +37,6 @@ public class Workspace extends JPanel implements MouseListener,
     
     ActionMode actionModeState = ActionMode.CREATE;
     ConnectionMode connectionModeState = ConnectionMode.TSP_GREEDY;
-    public Thread thread = new Thread(strategy);
 
     /**
      * Instantiates Workspace.
@@ -63,10 +63,16 @@ public class Workspace extends JPanel implements MouseListener,
      * @param mode ConnectionMode to set state to.
      */
     public void setConnectionState(ConnectionMode mode) throws InterruptedException {
-        thread.join(1);
+        thread.join(10);
         selected = null;
         connectionModeState = mode;
         StatusBar.getInstance().setStatus("Connection Mode changed to: " + mode.name());
+        checkForPath();
+
+    }
+
+    private void checkForPath() throws InterruptedException {
+        thread.join(10);
         if(connectionModeState == ConnectionMode.TSP_GREEDY) {
             strategy = new PathGenerator();
             thread = new Thread(strategy);
@@ -80,7 +86,6 @@ public class Workspace extends JPanel implements MouseListener,
             thread = new Thread(strategy);
             thread.start();
         }
-
     }
     
     /**
@@ -97,9 +102,10 @@ public class Workspace extends JPanel implements MouseListener,
      * Clear collection of cities and load new cities.
      * @param newCities Cities to load.
      */
-    public void loadCities(City[] newCities) {
+    public void loadCities(City[] newCities) throws InterruptedException {
         CityDatabase.getInstance().addCities(newCities);
         StatusBar.getInstance().setStatus("New cities loaded.");
+        checkForPath();
         repaint();
     }
     
@@ -225,6 +231,11 @@ public class Workspace extends JPanel implements MouseListener,
 
             if (selected != null) {
                 CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
+                try {
+                    checkForPath();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 repaint();
             }
             StatusBar.getInstance().setStatus("[MOVE] Placed city at new location: " 
@@ -255,6 +266,11 @@ public class Workspace extends JPanel implements MouseListener,
     public void mouseDragged(MouseEvent e) {
         if(actionModeState == ActionMode.MOVE && selected != null) {
             CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
+            try {
+                checkForPath();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             repaint();
         }
     }
@@ -309,6 +325,11 @@ public class Workspace extends JPanel implements MouseListener,
             CityDatabase.getInstance().createCity(x, y, name);
             StatusBar.getInstance().setStatus("New city " + name + " created.");
             isAddingCity = false;
+            try {
+                checkForPath();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             repaint();
         }
     }
