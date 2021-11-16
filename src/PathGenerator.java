@@ -8,7 +8,7 @@ import java.util.Map;
  * Class that generates TSP paths on update.
  * @author Nate Robinson
  */
-public class PathGenerator extends Observable implements Runnable {
+public class PathGenerator extends Strategy {
     
     /**
      * Invokes the traveling salesman solution.
@@ -43,9 +43,18 @@ public class PathGenerator extends Observable implements Runnable {
         if (firstCity != null && lastCity != null) {
             paths.put(lastCity, firstCity);
         }
+        double distance = calculatePathDistance(paths);
+        System.out.print("TSP greedy: ");
+        System.out.println(distance);
         return paths;
     }
-    
+    private double calculatePathDistance(Map<City, City> path) {
+        double totalDistance = 0;
+        for (Map.Entry<City, City> pair : path.entrySet()) {
+            totalDistance += calculateDistance(pair.getKey(), pair.getValue());
+        }
+        return totalDistance;
+    }
     /**
      * Uses basic distance function to create the hypotenuse between two cities.
      * @param cityA The first city
@@ -67,6 +76,11 @@ public class PathGenerator extends Observable implements Runnable {
         Map<City, City> paths = runTravelingSalesman(cities);
         CityDatabase.getInstance().clearConnections();
         CityDatabase.getInstance().addConnections(paths);
-        sendNotifications(null);
+    }
+
+    @Override
+    public void createPath() {
+        CityDatabase cityDB = CityDatabase.getInstance();
+        cityDB.addConnections(runTravelingSalesman(cityDB.cities));
     }
 }

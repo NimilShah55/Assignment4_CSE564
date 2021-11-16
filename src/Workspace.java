@@ -24,6 +24,7 @@ public class Workspace extends JPanel implements MouseListener,
     boolean isAddingCity = false;
     private City selected = null;
     final NewCityHandler newCityHandler;
+    public Strategy strategy = new PathGenerator();
     
     public enum ActionMode {
         CREATE, MOVE, CONNECT
@@ -35,6 +36,7 @@ public class Workspace extends JPanel implements MouseListener,
     
     ActionMode actionModeState = ActionMode.CREATE;
     ConnectionMode connectionModeState = ConnectionMode.TSP_GREEDY;
+    public Thread thread = new Thread(strategy);
 
     /**
      * Instantiates Workspace.
@@ -60,10 +62,25 @@ public class Workspace extends JPanel implements MouseListener,
      * Set the connection mode state that decides how to connect cities.
      * @param mode ConnectionMode to set state to.
      */
-    public void setConnectionState(ConnectionMode mode) {
+    public void setConnectionState(ConnectionMode mode) throws InterruptedException {
+        thread.join(1);
         selected = null;
         connectionModeState = mode;
         StatusBar.getInstance().setStatus("Connection Mode changed to: " + mode.name());
+        if(connectionModeState == ConnectionMode.TSP_GREEDY) {
+            strategy = new PathGenerator();
+            thread = new Thread(strategy);
+            thread.start();
+        } else if(connectionModeState == ConnectionMode.TSP_PRO) {
+            strategy = new BruteForcePath();
+            thread = new Thread(strategy);
+            thread.start();
+        } else if(connectionModeState == ConnectionMode.CLUSTERS) {
+            strategy = new Cluster();
+            thread = new Thread(strategy);
+            thread.start();
+        }
+
     }
     
     /**
