@@ -73,6 +73,7 @@ public class Workspace extends JPanel implements MouseListener,
 
     private void checkForPath() throws InterruptedException {
         thread.join(10);
+        thread.interrupt();
         if(connectionModeState == ConnectionMode.TSP_GREEDY) {
             strategy = new PathGenerator();
             thread = new Thread(strategy);
