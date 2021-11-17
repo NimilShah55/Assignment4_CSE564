@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+import java.awt.Color;
 public class FactoryCity implements Factory {
 	private static FactoryCity fc;
 
@@ -15,14 +15,23 @@ public class FactoryCity implements Factory {
 	}
 	
 	@Override
-	public void createCity(String name, int cityX, int cityY) {
-		Blackboard bb = Blackboard.createInstance();
-		ArrayList<City> cities = bb.getCities();
+	public City createCity(String name, int cityX, int cityY,int size, Color colour,String type) {
 		
-		if (cities.size() > 0) {
-			bb.addCity(new City(name, cities.size(), cityX, cityY, 20, 20));
-		} else {
-			bb.addCity(new City(name, 0, cityX, cityY, 20, 20));
+
+		if (type.equals("Square")) {
+			
+			return new BaseCity(cityX, cityY, name, colour, size);
+
+		} else if(type.equals("Circle")) {
+			return new BaseCircle(cityX, cityY, name, colour, size);
 		}
+		
+		else if(type.equals("Cross")) {
+			return new BaseCross(cityX, cityY, name, colour, size);
+		}
+		 
+		 
+
+
 	}
 }
