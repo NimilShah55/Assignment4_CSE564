@@ -1,4 +1,3 @@
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,18 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.GridLayout;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.awt.Label;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * GUI panel that handles mouse events and interactions with the cities.
@@ -129,14 +121,14 @@ public class Workspace extends JPanel implements MouseListener,
     }
 
     /**
-     * Unused.
-     * @param e ActionEvent, unused
+     * when double clicked it enables editing for the city.
+     * @param e ActionEvent - click that occurs
      */
     @Override
     public void mouseClicked(MouseEvent e) {
         if(e.getClickCount() == 2) {
             City select = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
-            new EditCityHandler(select);
+            new EditCityHandler(select, this);
         }
     }
 
@@ -264,129 +256,6 @@ public class Workspace extends JPanel implements MouseListener,
     @Override
     public void update(Object ob) {
         repaint();
-    }
-    
-    private class EditCityHandler implements ActionListener {
-        int x, y;
-        final JTextField name;
-        final JTextField size;
-        Color squareColor;
-        Color circleColor;
-        JComboBox<String> type;
-        JFrame popup;
-        JFrame squareFrame;
-        JFrame circleFrame;
-        City change;
-        private EditCityHandler(City change) {
-            x = change.getX();
-            y = change.getY();
-            this.change = change;
-            this.squareColor = new Color(0);
-            this.circleColor = new Color(0);
-            squareFrame = new JFrame();
-            circleFrame = new JFrame();
-            String[] selection = {
-                    "base is a square",
-                    "base with cross",
-                    "base with circle",
-                    "base with cross and circle"
-            };
-            type = new JComboBox<String>(selection);
-            this.name = new JTextField();
-            this.size = new JTextField();
-            name.setFont(new Font("Courier", Font.PLAIN, 16));
-            size.setFont(new Font("Courier", Font.PLAIN, 16));
-            popup = new JFrame();
-            popup.setLayout(new GridLayout(6, 2));
-            popup.setSize(400, 300);
-            popup.setVisible(false);
-            JColorChooser chooseSquare = new JColorChooser();
-            chooseSquare.getSelectionModel().addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    squareColor = chooseSquare.getColor();
-                    squareFrame.setVisible(false);
-                }
-            });
-            JColorChooser chooseCircle = new JColorChooser();
-            chooseCircle.getSelectionModel().addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    circleColor = chooseCircle.getColor();
-                    circleFrame.setVisible(false);
-                }
-            });
-            Button square = new Button("Color");
-            square.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    squareFrame.setSize(400, 400);
-                    squareFrame.add(chooseSquare);
-                    squareFrame.setVisible(true);
-                    squareFrame.requestFocus();
-                }
-            });
-            Button circle = new Button("Color");
-            circle.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    circleFrame.setSize(400, 400);
-                    circleFrame.add(chooseCircle);
-                    circleFrame.setVisible(true);
-                    circleFrame.requestFocus();
-                }
-            });
-            Button ok = new Button("ok");
-            ok.addActionListener(this);
-            popup.add(new Label("Name: "));
-            popup.add(name);
-            popup.add(new Label("Size: "));
-            popup.add(size);
-            popup.add(new Label("Type: "));
-            popup.add(type);
-            popup.add(new Label("Square Color: "));
-            popup.add(square);
-            popup.add(new Label("Circle Color: "));
-            popup.add(circle);
-            popup.add(ok);
-            name.setText("");
-            popup.setVisible(true);
-            popup.requestFocus();
-        }
-        /**
-         * Edit the city double clicked on
-         * @param e ActionEvent event on the ok button
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            popup.setVisible(false);
-            City created = new BaseCity(x, y, name.getText(), squareColor, size.getText());
-            switch((String)type.getSelectedItem()) {
-              case "base with cross":
-                  CrossCity cross = new CrossCity(x, y, name.getText(), squareColor, size.getText());
-                  cross.setCity(created);
-                  CityDatabase.getInstance().swapInstance(change, cross);
-                  break;
-              case "base with circle":
-                  CircleCity circle = new CircleCity(x, y, name.getText(), circleColor, size.getText());
-                  circle.setCity(created);
-                  CityDatabase.getInstance().swapInstance(change, circle);
-                  break;
-              case "base with cross and circle":
-                  CrossCity cross2 = new CrossCity(x, y, name.getText(), squareColor, size.getText());
-                  cross2.setCity(created);
-                  CircleCity circle2 = new CircleCity(x, y, name.getText(), circleColor, size.getText());
-                  circle2.setCity(cross2);
-                  CityDatabase.getInstance().swapInstance(change, circle2);
-                  break;
-              default:
-                  CityDatabase.getInstance().swapInstance(change, created);
-                  break;
-            }
-            CityDatabase.getInstance().swapInstance(change, created);
-            StatusBar.getInstance().setStatus("City " + name + " edited.");
-            repaint();
-        }
     }
     
     private class NewCityHandler implements ActionListener {

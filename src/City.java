@@ -75,4 +75,5 @@ public abstract class City {
     }
     
     public abstract void draw(Graphics g);
+    public abstract City getCity();
 }

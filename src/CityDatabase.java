@@ -43,6 +43,11 @@ public class CityDatabase {
         cities.add(new BaseCity(x, y, name, selected, size));
     }
     
+    /**
+     * swaps the given instance with the new instance
+     * @param change - one to replace
+     * @param created - new city to put
+     */
     public void swapInstance(City change, City created) {
         int i = 0;
         for (City city : cities) {
