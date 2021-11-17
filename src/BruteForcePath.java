@@ -25,20 +25,11 @@ public class BruteForcePath extends Strategy{
         City firstCity = cities.get(0);
         currentDistance = Double.MAX_VALUE;
         path = recursiveBruteForceHelper(cities, path, firstCity, cities.get(0));
-        double distance = calculatePathDistance(path);
-        System.out.print("TSP PRo: ");
-        System.out.println(distance);
         return path;
     }
 
-    /**
-     * Determines the Euclidean (2 dimensional) distance between two cities.
-     * @param sourceCity The first city (source or starting city).
-     * @param destCity The second city (destination city).
-     * @return The distance between given cities; if either city does not exist
-     * or the cities are the same object, the max value is returned.
-     */
-    public double calculateDistance(City sourceCity, City destCity) {
+
+    private double calculateDistance(City sourceCity, City destCity) {
         if (sourceCity == null || destCity == null || sourceCity.equals(destCity)) {
             return Double.MAX_VALUE;
         }
@@ -65,9 +56,6 @@ public class BruteForcePath extends Strategy{
             path.put(cities.get(0), firstCity);
             double distance = calculatePathDistance(path);
             if(distance < currentDistance) {
-                System.out.print(distance);
-                System.out.print(" vs current distance: ");
-                System.out.println(currentDistance);
                 bestPath = new HashMap<City, City>();
                 bestPath.putAll(path);
                 currentDistance = distance;

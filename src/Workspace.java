@@ -24,7 +24,7 @@ public class Workspace extends JPanel implements MouseListener,
     boolean isAddingCity = false;
     private City selected = null;
     final NewCityHandler newCityHandler;
-    public Strategy strategy = new PathGenerator();
+    private Strategy strategy;
     private Thread thread = new Thread(strategy);
     
     public enum ActionMode {
@@ -68,7 +68,7 @@ public class Workspace extends JPanel implements MouseListener,
         connectionModeState = mode;
         StatusBar.getInstance().setStatus("Connection Mode changed to: " + mode.name());
         checkForPath();
-
+        repaint();
     }
 
     private void checkForPath() throws InterruptedException {

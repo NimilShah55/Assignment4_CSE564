@@ -43,30 +43,11 @@ public class PathGenerator extends Strategy {
         if (firstCity != null && lastCity != null) {
             paths.put(lastCity, firstCity);
         }
-        double distance = calculatePathDistance(paths);
-        System.out.print("TSP greedy: ");
-        System.out.println(distance);
         return paths;
     }
 
 
-    private double calculatePathDistance(Map<City, City> path) {
-        double totalDistance = 0;
-        for (Map.Entry<City, City> pair : path.entrySet()) {
-            totalDistance += calculateDistance(pair.getKey(), pair.getValue());
-        }
-        return totalDistance;
-    }
-
-
-    /**
-     * Uses basic distance function to create the hypotenuse between two cities.
-     * @param cityA The first city
-     * @param cityB The second city
-     * @return The distance between given cities; if either city does not exist
-     * or the cities are the same object, the max value is returned.
-     */
-    public double calculateDistance(City cityA, City cityB) {
+    private double calculateDistance(City cityA, City cityB) {
         if (cityA == null || cityB == null || cityA.equals(cityB)) {
             return Double.MAX_VALUE;
         }

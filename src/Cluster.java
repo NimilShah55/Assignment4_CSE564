@@ -9,21 +9,6 @@ import java.util.List;
 public class Cluster extends Strategy {
 
     /**
-     * Determines the Euclidean (2 dimensional) distance between a city and a cluster center.
-     * @param city  The city
-     * @param center The center of a cluster
-     * @return The distance between the city and the cluster center (point) if the city does not exist
-     * the max value is returned.
-     */
-    public double calculateDistance(City city, Point center) {
-        if (city == null) {
-            return Double.MAX_VALUE;
-        }
-        return Math.sqrt(Math.pow(city.getX() - center.getX(), 2) +
-                Math.pow(city.getY() - center.getY(), 2));
-    }
-
-    /**
      * Invokes the k-means clustering algorithm.
      * @param cities List of cities to map
      * @return Paths between cities as a map
@@ -71,6 +56,15 @@ public class Cluster extends Strategy {
         }
         paths = getAllClusterPaths(citiesCenter0, citiesCenter1, citiesCenter2);
         return paths;
+    }
+
+
+    private double calculateDistance(City city, Point center) {
+        if (city == null) {
+            return Double.MAX_VALUE;
+        }
+        return Math.sqrt(Math.pow(city.getX() - center.getX(), 2) +
+                Math.pow(city.getY() - center.getY(), 2));
     }
 
 
