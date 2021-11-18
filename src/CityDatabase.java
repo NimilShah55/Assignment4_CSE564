@@ -20,7 +20,6 @@ public class CityDatabase extends Observable {
 
     final List<City> cities;
     final Map<City, City> paths;
-    City selected = null;
 
     /**
      * Instantiates CityDatabase.
