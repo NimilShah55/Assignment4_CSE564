@@ -18,7 +18,7 @@ public class BruteForcePath extends Strategy{
      * @param cities List of cities that will be visited and mapped.
      * @return Guaranteed best paths between cities as a map
      */
-    public Map<City, City> runBruteForcePath(List<City> cities) {
+    public Map<City, City> runBruteForcePath(List<City> cities) throws InterruptedException {
         if(cities == null || cities.size() < 2)
             return null;
         Map<City, City> path = new HashMap<>();
@@ -50,7 +50,10 @@ public class BruteForcePath extends Strategy{
     private Map<City, City> recursiveBruteForceHelper(List<City> cities,
                                                      Map<City, City> path,
                                                      City firstCity,
-                                                     City currentCity) {
+                                                     City currentCity) throws InterruptedException {
+        if (Thread.interrupted()) {
+            throw new InterruptedException();
+        }
         Map<City, City> bestPath = null;
         if(cities.size() <= 1) {
             path.put(cities.get(0), firstCity);
@@ -82,7 +85,7 @@ public class BruteForcePath extends Strategy{
      * @param cityDB The CityDatabase singleton object that will be updated.
      */
     @Override
-    public void createPath(CityDatabase cityDB) {
+    public void createPath(CityDatabase cityDB) throws InterruptedException {
         Map<City, City> path = runBruteForcePath(cityDB.cities);
         if(path != null)
             cityDB.addConnections(path);

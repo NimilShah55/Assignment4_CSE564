@@ -13,7 +13,7 @@ public class Cluster extends Strategy {
      * @param cities List of cities to map
      * @return Paths between cities as a map
      */
-    public Map<City, City> runClustering(List<City> cities) {
+    public Map<City, City> runClustering(List<City> cities) throws InterruptedException {
         if (cities == null || cities.size() < 3 ) return null;
         ArrayList<City> citiesCenter0 = new ArrayList<>();
         ArrayList<City> citiesCenter1 = new ArrayList<>();
@@ -31,6 +31,9 @@ public class Cluster extends Strategy {
             citiesCenter1.clear();
             citiesCenter2.clear();
             for (City thisCity : cities) {
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
                 int nearestCenter = -1;
                 int centerCounter = 0;
                 double shortestDistance = Double.MAX_VALUE;
@@ -148,7 +151,7 @@ public class Cluster extends Strategy {
      * @param cityDB The CityDatabase singleton object that will be updated.
      */
     @Override
-    public void createPath(CityDatabase cityDB) {
+    public void createPath(CityDatabase cityDB) throws InterruptedException {
         Map<City, City> path = runClustering(cityDB.cities);
         if(path != null)
             cityDB.addConnections(path);

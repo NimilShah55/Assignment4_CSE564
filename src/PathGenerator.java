@@ -15,7 +15,7 @@ public class PathGenerator extends Strategy {
      * @param cities List of cities to map
      * @return Paths between cities as a map
      */
-    public Map<City, City> runTravelingSalesman(List<City> cities) {
+    public Map<City, City> runTravelingSalesman(List<City> cities) throws InterruptedException {
         if (cities == null || cities.size() < 2 ) return null;
         Map<City, City> paths = new HashMap<>();
         City firstCity = cities.iterator().next();
@@ -25,6 +25,9 @@ public class PathGenerator extends Strategy {
             City nearestCity = null;
             double shortestDistance = Double.MAX_VALUE;
             for (City otherCity : cities) {
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
                 if (thisCity == otherCity
                         || paths.containsKey(otherCity)
                         || paths.containsValue(otherCity)) continue;
@@ -61,7 +64,7 @@ public class PathGenerator extends Strategy {
      * @param cityDB The CityDatabase singleton object that will be updated.
      */
     @Override
-    public void createPath(CityDatabase cityDB) {
+    public void createPath(CityDatabase cityDB) throws InterruptedException {
         Map<City, City> path = runTravelingSalesman(cityDB.cities);
         if(path != null)
             cityDB.addConnections(path);

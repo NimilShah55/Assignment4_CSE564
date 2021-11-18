@@ -63,7 +63,6 @@ public class Workspace extends JPanel implements MouseListener,
      * @param mode ConnectionMode to set state to.
      */
     public void setConnectionState(ConnectionMode mode) throws InterruptedException {
-        thread.join(10);
         selected = null;
         connectionModeState = mode;
         StatusBar.getInstance().setStatus("Connection Mode changed to: " + mode.name());
@@ -72,7 +71,6 @@ public class Workspace extends JPanel implements MouseListener,
     }
 
     private void checkForPath() throws InterruptedException {
-        thread.join(10);
         thread.interrupt();
         if(connectionModeState == ConnectionMode.TSP_GREEDY) {
             strategy = new PathGenerator();

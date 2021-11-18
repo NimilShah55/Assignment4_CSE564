@@ -4,7 +4,7 @@
  */
 public abstract class Strategy implements Runnable {
 
-    public abstract void createPath(CityDatabase cityDB);
+    public abstract void createPath(CityDatabase cityDB) throws InterruptedException;
 
     /**
      * Call createPath() (as specified by child classes) and have them generate the given city paths.
@@ -12,6 +12,10 @@ public abstract class Strategy implements Runnable {
     @Override
     public void run() {
         CityDatabase cityDB = CityDatabase.getInstance();
-        createPath(cityDB);
+        try {
+            createPath(cityDB);
+        } catch (InterruptedException e) {
+            return;
+        }
     }
 }
