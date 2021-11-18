@@ -43,6 +43,8 @@ public class Workspace extends JPanel implements MouseListener,
      */
     public Workspace() {
         this.newCityHandler = new NewCityHandler();
+        // add to observables/listeners
+        CityDatabase.getInstance().addObserver(this);
         addMouseMotionListener(this);
         addMouseListener(this);
     }
@@ -156,7 +158,7 @@ public class Workspace extends JPanel implements MouseListener,
     }
 
     /**
-     * CREATE a city if empty spot, otherwise select and move city.
+     * Create a city if empty spot, otherwise select and move city.
      * @param e Used to get the location of the mouse
      */
     @Override
@@ -166,15 +168,17 @@ public class Workspace extends JPanel implements MouseListener,
                 if (selected != null) {
                     // if a city is already selected and another is sequentially
                     // selected, create a path between them.
-                    City selected2 = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
-                    if (selected2 != null) {
+                    City newSelected = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
+                    if (newSelected != null) {
                         preX = (int)(selected.getX() - e.getX());
                         preY = (int)(selected.getY() - e.getY());
                         CityDatabase.getInstance().addConnections(
-                                Collections.singletonMap(selected, selected2));
+                                Collections.singletonMap(selected, newSelected));
                         StatusBar.getInstance().setStatus("Connection created between City " 
-                                + selected.name + " and " + selected2.name + ".");
-                        repaint();
+                                + selected.name + " and " + newSelected.name + ".");
+                    } else if (selected != null) {
+                        StatusBar.getInstance().setStatus("Empty space clicked." 
+                                + "City was deselected.");
                     } else {
                         StatusBar.getInstance().setStatus("No city selected. " 
                                 + "Click a city to start a connection.");
@@ -192,7 +196,6 @@ public class Workspace extends JPanel implements MouseListener,
                                 preX + e.getX(), preY + e.getY());
                         StatusBar.getInstance().setStatus("City link started with City " 
                                 + selected.name + ".");
-                        repaint();
                     }
                 }
                 break;
@@ -213,15 +216,13 @@ public class Workspace extends JPanel implements MouseListener,
                     preY = (int)(selected.getY() - e.getY());
                     CityDatabase.getInstance().moveCity(selected, 
                             preX + e.getX(), preY + e.getY());
-                    StatusBar.getInstance().setStatus("City " + selected.name + " selected to move.");
-                    repaint();
                 }
                 break;
         }
     }
 
     /**
-     * MOVE the city to location of mouse release.
+     * Move the city to location of mouse release.
      * @param e Used to get the location of the mouse
      */
     @Override
@@ -231,6 +232,8 @@ public class Workspace extends JPanel implements MouseListener,
 
             if (selected != null) {
                 CityDatabase.getInstance().moveCity(selected, preX + e.getX(), preY + e.getY());
+                StatusBar.getInstance().setStatus("Placed city at new location: " 
+                        + (preX + e.getX()) + ", " + (preY + e.getY()));
                 try {
                     checkForPath();
                 } catch (InterruptedException ex) {
@@ -238,8 +241,6 @@ public class Workspace extends JPanel implements MouseListener,
                 }
                 repaint();
             }
-            StatusBar.getInstance().setStatus("[MOVE] Placed city at new location: " 
-                    + (preX + e.getX()) + ", " + (preY + e.getY()));
         }
     }
 

@@ -1,17 +1,12 @@
 
-import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.border.BevelBorder;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- *
- * @author nate
+ * A printable singleton label to communicate system messages and state to the
+ * user.
+ * @author Nate Robinson
  */
 public class StatusBar extends JLabel {
     
@@ -24,6 +19,10 @@ public class StatusBar extends JLabel {
         setVisible(true);
     }
     
+    /**
+     * Get singleton instance of the StatusBar class.
+     * @return Only instance of StatusBar.
+     */
     public static StatusBar getInstance() {
         if (instance == null) {
             instance = new StatusBar();
@@ -31,6 +30,10 @@ public class StatusBar extends JLabel {
         return instance;
     }
     
+    /**
+     * Replace the status bar text with a new user message.
+     * @param message The text to display.
+     */
     public void setStatus(String message) {
         setText("" + message);
     }
