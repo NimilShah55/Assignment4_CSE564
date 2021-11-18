@@ -233,12 +233,16 @@ public class View extends JFrame {
             if (lineDelimiter == -1) break;
             line = text.substring(0, lineDelimiter + 1);
             text = text.substring(lineDelimiter + 1);
+            if(line.contains("EOFCoordinates")) {
+               break;
+            }
             coords = line.split(" ");
             int y = (int)Double.parseDouble(coords[2]);
             int x = (int)Double.parseDouble(coords[1]);
             String name = coords.length > 3 ? coords[3] : "";
             CityDatabase.getInstance().createCity(x, y, name, new Color(1), "");
-        } while (!text.startsWith("EOFCoordinates"));
+        } while (!line.contains("EOFCoordinates"));
+        System.out.println("here");
         parseConnections(text);
     }
     
@@ -252,11 +256,14 @@ public class View extends JFrame {
         String line = "";
         int lineDelimiter;
         Map<City, City> connections = new HashMap<>();
-        while(text.contains("EOFLines")) {
+        while(!line.contains("EOFLines")) {
             lineDelimiter = text.indexOf("\n");
             if (lineDelimiter == -1) break;
             line = text.substring(0, lineDelimiter + 1);
             text = text.substring(lineDelimiter + 1);
+            if(line.contains("EOFLines")) {
+                break;
+             }
             coords = line.split(" ");
             City one = find.findCityAt(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
             City two = find.findCityAt(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
