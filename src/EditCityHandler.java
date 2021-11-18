@@ -112,6 +112,7 @@ public class EditCityHandler implements ActionListener {
             String buttonName = ((Button)e.getSource()).getLabel();
             if(buttonName.equals("ok")) {
                 okAction();
+                StatusBar.getInstance().setStatus("Edited city " + change.name + ".");
             }else if(buttonName.equals("Square")) {
                 squareFrame.setVisible(true);
                 squareFrame.requestFocus();
