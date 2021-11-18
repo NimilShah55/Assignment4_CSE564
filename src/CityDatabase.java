@@ -39,15 +39,17 @@ public class CityDatabase extends Observable {
      * @param x The X location of the city
      * @param y The Y location of the city
      * @param name The name of the city
+     * @param color The color of the city
+     * @param size The size of the city
      */
-
-    public void createCity(int x, int y, String name, Color selected, String size) {
-        cities.add(new BaseCity(x, y, name, selected, size));
+    public void createCity(int x, int y, String name, Color color, String size) {
+        City newCity = FactoryCity.getFC().createCity(name, y, y, size, color, size);
+        cities.add(newCity);
         sendNotifications(this);
     }
     
     /**
-     * swaps the given instance with the new instance
+     * Swaps the given instance with the new instance
      * @param change - one to replace
      * @param created - new city to put
      */
@@ -106,7 +108,7 @@ public class CityDatabase extends Observable {
     }
 
     /**
-     * Set the paths to draw and send change notifications.
+     * Adds new paths and send change notifications.
      * @param connections Paths between cities as map entries
      */
     public void addConnections(Map<City, City> connections) {

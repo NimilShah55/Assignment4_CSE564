@@ -146,7 +146,7 @@ public class Workspace extends JPanel implements MouseListener,
     }
 
     /**
-     * when double clicked it enables editing for the city.
+     * On double clicking city, this enables editing for the city.
      * @param e ActionEvent - click that occurs
      */
     @Override
@@ -160,7 +160,11 @@ public class Workspace extends JPanel implements MouseListener,
     }
 
     /**
-     * Create a city if empty spot, otherwise select and move city.
+     * Attempt to interact given the current action mode. If User Connect mode,
+     * it will either select a city to connect on a future click or connect the 
+     * city if another selection exists. If Create mode, it will prompt the user
+     * for info about the new city and create it. If the mode is Move and a
+     * city is selected, it will initiate dragging the city.
      * @param e Used to get the location of the mouse
      */
     @Override
