@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 
 /**
- * Factory city that decided which class to instantiate.
+ * Factory city decides which class to instantiate.
  * @author Nimil Shah
  */
 public class FactoryCity implements Factory {
@@ -11,7 +11,7 @@ public class FactoryCity implements Factory {
 	private FactoryCity() {}
 	
 /**
- * Get City Istance.
+ * Get City Instance.
  * @return city instance
  */	
 	public static FactoryCity getFC() {
