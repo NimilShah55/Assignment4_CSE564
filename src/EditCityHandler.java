@@ -125,23 +125,24 @@ public class EditCityHandler implements ActionListener {
          * ok button was selected then it will put the decorator together
          */
         public void okAction() {
+            FactoryCity maker = FactoryCity.getFC();
             popup.setVisible(false);
-            City created = new BaseCity(x, y, name.getText(), squareColor, size.getText());
+            City created = maker.createCity(name.getText(), x, y,  size.getText(), squareColor, "Square");
             switch((String)type.getSelectedItem()) {
               case "base with cross":
-                  CrossCity cross = new CrossCity(x, y, name.getText(), squareColor, size.getText());
+                  CrossCity cross = (CrossCity) maker.createCity(name.getText(), x, y,  size.getText(), squareColor, "Cross");
                   cross.setCity(created);
                   CityDatabase.getInstance().swapInstance(change, cross);
                   break;
               case "base with circle":
-                  CircleCity circle = new CircleCity(x, y, name.getText(), circleColor, size.getText());
+                  CircleCity circle = (CircleCity) maker.createCity(name.getText(), x, y,  size.getText(), circleColor, "Circle");
                   circle.setCity(created);
                   CityDatabase.getInstance().swapInstance(change, circle);
                   break;
               case "base with cross and circle":
-                  CrossCity cross2 = new CrossCity(x, y, name.getText(), squareColor, size.getText());
+                  CrossCity cross2 = (CrossCity) maker.createCity(name.getText(), x, y,  size.getText(), squareColor, "Cross");
                   cross2.setCity(created);
-                  CircleCity circle2 = new CircleCity(x, y, name.getText(), circleColor, size.getText());
+                  CircleCity circle2 = (CircleCity) maker.createCity(name.getText(), x, y,  size.getText(), circleColor, "Circle");
                   circle2.setCity(cross2);
                   CityDatabase.getInstance().swapInstance(change, circle2);
                   break;

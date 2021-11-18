@@ -34,7 +34,7 @@ public class BaseCity extends City {
         g.setFont(new Font("Courier", Font.PLAIN, 14));
         g.drawString(name, bounds.x + bounds.width, bounds.y);
     }
-    
+
     /**
      * returns itself since its the base city
      */
