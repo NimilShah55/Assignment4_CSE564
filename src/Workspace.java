@@ -24,7 +24,7 @@ public class Workspace extends JPanel implements MouseListener,
     boolean isAddingCity = false;
     private City selected = null;
     final NewCityHandler newCityHandler;
-    private Strategy strategy;
+    private Strategy strategy = new GreedyTSP();
     private Thread thread = new Thread(strategy);
     
     public enum ActionMode {
@@ -43,7 +43,6 @@ public class Workspace extends JPanel implements MouseListener,
      */
     public Workspace() {
         this.newCityHandler = new NewCityHandler();
-
         addMouseMotionListener(this);
         addMouseListener(this);
     }
@@ -73,7 +72,7 @@ public class Workspace extends JPanel implements MouseListener,
     private void checkForPath() throws InterruptedException {
         thread.interrupt();
         if(connectionModeState == ConnectionMode.TSP_GREEDY) {
-            strategy = new PathGenerator();
+            strategy = new GreedyTSP();
             thread = new Thread(strategy);
             thread.start();
         } else if(connectionModeState == ConnectionMode.TSP_PRO) {
@@ -92,6 +91,7 @@ public class Workspace extends JPanel implements MouseListener,
      */
     public void reset() {
         selected = null;
+        thread.interrupt();
         CityDatabase.getInstance().clear();
         StatusBar.getInstance().setStatus("Cities cleared.");
         repaint();
@@ -102,6 +102,7 @@ public class Workspace extends JPanel implements MouseListener,
      * @param newCities Cities to load.
      */
     public void loadCities(City[] newCities) throws InterruptedException {
+        thread.interrupt();
         CityDatabase.getInstance().addCities(newCities);
         StatusBar.getInstance().setStatus("New cities loaded.");
         checkForPath();

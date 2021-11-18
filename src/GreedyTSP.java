@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,7 @@ import java.util.Map;
  * Class that generates TSP paths on update.
  * @author Nate Robinson, Dustin Howarth
  */
-public class PathGenerator extends Strategy {
+public class GreedyTSP extends Strategy {
     
     /**
      * Invokes the traveling salesman solution.
