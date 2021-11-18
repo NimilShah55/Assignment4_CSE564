@@ -151,7 +151,7 @@ public class EditCityHandler implements ActionListener {
                   break;
             }
             CityDatabase.getInstance().swapInstance(change, created);
-            StatusBar.getInstance().setStatus("City " + name + " edited.");
+            StatusBar.getInstance().setStatus("City " + change.name + " edited.");
             panel.repaint();
         }
     }

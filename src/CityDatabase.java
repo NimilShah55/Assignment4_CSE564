@@ -51,14 +51,31 @@ public class CityDatabase extends Observable {
      * @param change - one to replace
      * @param created - new city to put
      */
-    public void swapInstance(City oldCity, City newCity) {
+    public void swapInstance(City change, City created) {
         int i = 0;
         for (City city : cities) {
-            if (city == oldCity) {
-                cities.set(i, newCity);
+            if (city == change) {
+                cities.set(i, created);
             }
             i++;
         }
+        try {
+            for(Map.Entry<City, City> map: paths.entrySet()) {
+                if(map.getValue().equals(change)) {
+                    City temp = map.getKey();
+                    paths.replace(temp, change, created);
+                }else if(map.getKey().equals(change)) {
+                    City temp = paths.remove(change);
+                    if(temp != null) {
+                        paths.put(created, temp);
+                    }
+                }
+            }
+            paths.remove(change);
+        }catch(Exception e) {
+            
+        }
+        sendNotifications(this);
     }
     
     /**
