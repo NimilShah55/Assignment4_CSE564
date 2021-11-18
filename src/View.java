@@ -233,15 +233,12 @@ public class View extends JFrame {
             if (lineDelimiter == -1) break;
             line = text.substring(0, lineDelimiter + 1);
             text = text.substring(lineDelimiter + 1);
-            if(line.contains("EOFCoordinates")) {
-                break;
-            }
             coords = line.split(" ");
             int y = (int)Double.parseDouble(coords[2]);
             int x = (int)Double.parseDouble(coords[1]);
             String name = coords.length > 3 ? coords[3] : "";
             CityDatabase.getInstance().createCity(x, y, name, new Color(1), "");
-        } while (text.contains("EOFCoordinates"));
+        } while (!text.startsWith("EOFCoordinates"));
         parseConnections(text);
     }
     
@@ -259,9 +256,6 @@ public class View extends JFrame {
             lineDelimiter = text.indexOf("\n");
             if (lineDelimiter == -1) break;
             line = text.substring(0, lineDelimiter + 1);
-            if(line.contains("EOFLines")) {
-                break;
-            }
             text = text.substring(lineDelimiter + 1);
             coords = line.split(" ");
             City one = find.findCityAt(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
@@ -299,7 +293,7 @@ public class View extends JFrame {
                 double x = (double) city.getX();
                 double y = (double) city.getY();
                 String out = String.format("%d %.4f %.4f %s\n", 
-                        i + 1, x, y, city.name);
+                        i + 1, x, y, city.name.split("\n")[0]);
                 writer.write(out);
             }
             writer.write("EOFCoordinates\n");
