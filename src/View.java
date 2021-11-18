@@ -28,7 +28,6 @@ public class View extends JFrame {
 
     /**
      * Initialize the view with menu and content.
-     * @param panel Main workspace panel to display as content
      */
     public View() {
         Workspace panel = new Workspace();
@@ -79,28 +78,44 @@ public class View extends JFrame {
         optTSPGreedy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.TSP_GREEDY);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.TSP_GREEDY);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optTSPBrute = new JMenuItem("TSP Pro");
         optTSPBrute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.TSP_PRO);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.TSP_PRO);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optCluster = new JMenuItem("Clusters");
         optCluster.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.CLUSTERS);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.CLUSTERS);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optUserConn = new JMenuItem("User Connect");
         optUserConn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         connMenu.add(optTSPGreedy);
@@ -123,7 +138,11 @@ public class View extends JFrame {
         optConnect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 panel.setActionState(Workspace.ActionMode.CONNECT);
             }
         });
