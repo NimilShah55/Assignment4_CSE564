@@ -242,7 +242,6 @@ public class View extends JFrame {
             String name = coords.length > 3 ? coords[3] : "";
             CityDatabase.getInstance().createCity(x, y, name, new Color(1), "");
         } while (!line.contains("EOFCoordinates"));
-        System.out.println("here");
         parseConnections(text);
     }
     
