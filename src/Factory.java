@@ -1,4 +1,3 @@
-import javax.swing.text.AttributeSet.ColorAttribute;
 import java.awt.Color;
 
 
@@ -7,5 +6,5 @@ import java.awt.Color;
  * @author Nimil Shah
  */
 public interface Factory {
-	public City createCity(String name, int cityX, int cityY, int size, Color colour, String type);
+	public City createCity(String name, int cityX, int cityY, String size, Color colour,String type);
 }
