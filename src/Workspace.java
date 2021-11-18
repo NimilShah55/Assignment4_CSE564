@@ -153,7 +153,9 @@ public class Workspace extends JPanel implements MouseListener,
     public void mouseClicked(MouseEvent e) {
         if(e.getClickCount() == 2) {
             City select = CityDatabase.getInstance().findCityAt(e.getX(), e.getY());
-            new EditCityHandler(select, this);
+            if(select!= null) {
+                new EditCityHandler(select, this);
+            }
         }
     }
 

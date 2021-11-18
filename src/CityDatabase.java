@@ -51,11 +51,11 @@ public class CityDatabase extends Observable {
      * @param change - one to replace
      * @param created - new city to put
      */
-    public void swapInstance(City change, City created) {
+    public void swapInstance(City oldCity, City newCity) {
         int i = 0;
         for (City city : cities) {
-            if (city == change) {
-                cities.set(i, created);
+            if (city == oldCity) {
+                cities.set(i, newCity);
             }
             i++;
         }
