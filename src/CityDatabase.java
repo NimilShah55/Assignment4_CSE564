@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,9 @@ public class CityDatabase {
      * @return Intersecting city or null if none
      */
     public City findCityAt(int x, int y) {
-        for (City c : cities) {
+        Iterator<City> iterator = cities.iterator();
+        while (iterator.hasNext()) {
+            City c = (City)iterator.next();
             if (c.contains(x, y)) {
                 return c;
             }
