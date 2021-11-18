@@ -7,23 +7,27 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import java.awt.Color;
 
 /**
  * Encapsulating view class that runs the program and handles menu interaction,
  * including saving and loading a map.
- * @author Nate Robinson
+ * @author Nate Robinson, Gianni Consiglio
  */
 public class View extends JFrame {
 
     /**
      * Initialize the view with menu and content.
-     * @param panel Main workspace panel to display as content
      */
     public View() {
         Workspace panel = new Workspace();
@@ -59,7 +63,7 @@ public class View extends JFrame {
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                save(CityDatabase.getInstance().cities);
+                save(CityDatabase.getInstance().cities, CityDatabase.getInstance().paths);
             }
         });
         fileMenu.add(newItem);
@@ -74,28 +78,44 @@ public class View extends JFrame {
         optTSPGreedy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.TSP_GREEDY);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.TSP_GREEDY);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optTSPBrute = new JMenuItem("TSP Pro");
         optTSPBrute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.TSP_PRO);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.TSP_PRO);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optCluster = new JMenuItem("Clusters");
         optCluster.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.CLUSTERS);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.CLUSTERS);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         JMenuItem optUserConn = new JMenuItem("User Connect");
         optUserConn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         connMenu.add(optTSPGreedy);
@@ -118,7 +138,11 @@ public class View extends JFrame {
         optConnect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                try {
+                    panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 panel.setActionState(Workspace.ActionMode.CONNECT);
             }
         });
@@ -155,7 +179,6 @@ public class View extends JFrame {
         
         String typeValue = seekHeaderValue(text, "TYPE");
         String dimensionValue = seekHeaderValue(text, "DIMENSION");
-        int numOfCities = Integer.parseInt(dimensionValue);
         
         if (typeValue.equalsIgnoreCase("TSP")) {
             parseNodes(text);
@@ -203,26 +226,58 @@ public class View extends JFrame {
     private void parseNodes(String text) {
         text = seekHeaderValue(text, "NODE_COORD_SECTION");
         String[] coords;
-        String line;
+        String line = "";
         int lineDelimiter;
         do {
             lineDelimiter = text.indexOf("\n");
             if (lineDelimiter == -1) break;
             line = text.substring(0, lineDelimiter + 1);
             text = text.substring(lineDelimiter + 1);
-            coords = line.trim().split(" ");
-            int y = (int)Double.parseDouble(coords[1]);
-            int x = (int)Double.parseDouble(coords[2]);
+            if(line.contains("EOFCoordinates")) {
+                break;
+            }
+            coords = line.split(" ");
+            int y = (int)Double.parseDouble(coords[2]);
+            int x = (int)Double.parseDouble(coords[1]);
             String name = coords.length > 3 ? coords[3] : "";
-            CityDatabase.getInstance().createCity(x, y, name);
-        } while (!text.startsWith("EOF"));
+            CityDatabase.getInstance().createCity(x, y, name, new Color(1), "");
+        } while (text.contains("EOFCoordinates"));
+        parseConnections(text);
+    }
+    
+    /**
+     * this creates the connections from a file.
+     * @param text
+     */
+    private void parseConnections(String text){
+        CityDatabase find = CityDatabase.getInstance();
+        String[] coords;
+        String line = "";
+        int lineDelimiter;
+        Map<City, City> connections = new HashMap<>();
+        while(text.contains("EOFLines")) {
+            lineDelimiter = text.indexOf("\n");
+            if (lineDelimiter == -1) break;
+            line = text.substring(0, lineDelimiter + 1);
+            if(line.contains("EOFLines")) {
+                break;
+            }
+            text = text.substring(lineDelimiter + 1);
+            coords = line.split(" ");
+            City one = find.findCityAt(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+            City two = find.findCityAt(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]));
+            if(one!=null&&two!=null) {
+                connections.put(one, two);
+            }
+        }
+        find.addConnections(connections);
     }
     
     /**
      * Saves the current model.
      * @param cities List of cities to save.
      */
-    public void save(List<City> cities) {
+    public void save(List<City> cities, Map<City, City> connects) {
         JFileChooser createFile = new JFileChooser(".");
         createFile.showSaveDialog(View.this);
         File saveFile = createFile.getSelectedFile();
@@ -247,6 +302,11 @@ public class View extends JFrame {
                         i + 1, x, y, city.name);
                 writer.write(out);
             }
+            writer.write("EOFCoordinates\n");
+            for(Map.Entry<City, City> map: connects.entrySet()) {
+                writer.write(map.getKey().getX() + " " + map.getKey().getY() + " " + map.getValue().getX() + " " + map.getValue().getY()+" \n");
+            }
+            writer.write("EOFLines\n");
             writer.flush();
             writer.close();
         } catch (IOException ex) {

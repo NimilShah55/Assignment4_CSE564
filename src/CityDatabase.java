@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.awt.Color;
 
 /**
  * A collection of cities that allows data manipulation and drawing.
@@ -39,9 +40,25 @@ public class CityDatabase extends Observable {
      * @param y The Y location of the city
      * @param name The name of the city
      */
-    public void createCity(int x, int y, String name) {
-        cities.add(new City(x, y, name));
+
+    public void createCity(int x, int y, String name, Color selected, String size) {
+        cities.add(new BaseCity(x, y, name, selected, size));
         sendNotifications(this);
+    }
+    
+    /**
+     * swaps the given instance with the new instance
+     * @param change - one to replace
+     * @param created - new city to put
+     */
+    public void swapInstance(City change, City created) {
+        int i = 0;
+        for (City city : cities) {
+            if (city == change) {
+                cities.set(i, created);
+            }
+            i++;
+        }
     }
     
     /**

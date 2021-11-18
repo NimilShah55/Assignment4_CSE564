@@ -1,15 +1,18 @@
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Graphics;
+import java.awt.Color;
 
 /**
  * Movable city that holds positional values to represent location and a name.
  * @author Nate Robinson
  */
-public class City {
+public abstract class City {
     
     public Rectangle bounds;
     public final String name;
-    private static final int SIZE = 16;
+    public int size;
+    public Color color;
     
     /**
      * Constructs City instance.
@@ -17,9 +20,16 @@ public class City {
      * @param y Y location of city
      * @param name
      */
-    public City(int x, int y, String name) {
-        this.bounds = new Rectangle(x, y, SIZE, SIZE);
+    public City(int x, int y, String name, Color color, String size) {
+        int shapeSize;
+        try {
+            shapeSize = Integer.parseInt(size);
+        }catch(Exception e) {
+            shapeSize = 16;
+        }
+        this.bounds = new Rectangle(x, y, shapeSize, shapeSize);
         this.name = name;
+        this.color = color;
     }
     
     /**
@@ -63,4 +73,7 @@ public class City {
     public Point center() {
         return new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
     }
+    
+    public abstract void draw(Graphics g);
+    public abstract City getCity();
 }
