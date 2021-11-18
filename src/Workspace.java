@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 /**
  * GUI panel that handles mouse events and interactions with the cities.
- * @author Nate Robinson
+ * @author Nate Robinson, Gianni Consiglio
  */
 public class Workspace extends JPanel implements MouseListener, 
         MouseMotionListener, IObserver {

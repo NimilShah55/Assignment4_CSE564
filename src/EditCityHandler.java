@@ -14,6 +14,11 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ * EditCityHandler adds the popup when editing the cities.
+ * 
+ * @author Gianni Consiglio, Nate Robinson
+ */
 public class EditCityHandler implements ActionListener {
         int x, y;
         final JTextField name;
@@ -27,7 +32,13 @@ public class EditCityHandler implements ActionListener {
         JFrame squareFrame;
         JFrame circleFrame;
         
-        EditCityHandler(City change, JPanel panel) {
+        /**
+         * default constructor for editing the city.
+         * 
+         * @param change - city to edit
+         * @param panel - panel to refresh
+         */
+        public EditCityHandler(City change, JPanel panel) {
             this.panel = panel;
             x = change.getX();
             y = change.getY();
@@ -109,7 +120,10 @@ public class EditCityHandler implements ActionListener {
                 circleFrame.requestFocus();
             }
         }
-
+        
+        /**
+         * ok button was selected then it will put the decorator together
+         */
         public void okAction() {
             popup.setVisible(false);
             City created = new BaseCity(x, y, name.getText(), squareColor, size.getText());
