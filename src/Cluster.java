@@ -113,25 +113,30 @@ public class Cluster extends Strategy {
                                                   ArrayList<City> citiesCenter1,
                                                   ArrayList<City> citiesCenter2) {
         HashMap<City, City> map = new HashMap<>();
-        City firstCity = citiesCenter0.get(0);
-        for(int i = 0; i < citiesCenter0.size() - 1; i++){
-            map.put(citiesCenter0.get(i),citiesCenter0.get(i+1));
+        if(citiesCenter0.size() != 0) {
+            City firstCity = citiesCenter0.get(0);
+            for (int i = 0; i < citiesCenter0.size() - 1; i++) {
+                map.put(citiesCenter0.get(i), citiesCenter0.get(i + 1));
+            }
+            map.put(citiesCenter0.get(citiesCenter0.size() - 1), firstCity);
         }
-        map.put(citiesCenter0.get(citiesCenter0.size() - 1), firstCity);
 
-        firstCity = citiesCenter1.get(0);
-        for(int i = 0; i < citiesCenter1.size() - 1; i++){
-            map.put(citiesCenter1.get(i),citiesCenter1.get(i+1));
+        if(citiesCenter1.size() != 0) {
+            City firstCity = citiesCenter1.get(0);
+            for (int i = 0; i < citiesCenter1.size() - 1; i++) {
+                map.put(citiesCenter1.get(i), citiesCenter1.get(i + 1));
+            }
+            map.put(citiesCenter1.get(citiesCenter1.size() - 1), firstCity);
         }
-        map.put(citiesCenter1.get(citiesCenter1.size() - 1), firstCity);
 
-        firstCity = citiesCenter2.get(0);
-        for(int i = 0; i < citiesCenter2.size() - 1; i++){
-            map.put(citiesCenter2.get(i),citiesCenter2.get(i+1));
+        if(citiesCenter2.size() != 0) {
+            City firstCity = citiesCenter2.get(0);
+            for (int i = 0; i < citiesCenter2.size() - 1; i++) {
+                map.put(citiesCenter2.get(i), citiesCenter2.get(i + 1));
+            }
+            map.put(citiesCenter2.get(citiesCenter2.size() - 1), firstCity);
         }
-        map.put(citiesCenter2.get(citiesCenter2.size() - 1), firstCity);
         return map;
-
     }
 
     private ArrayList<Point> recalculateCenters(List<City> cities,
