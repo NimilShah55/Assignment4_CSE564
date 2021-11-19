@@ -35,6 +35,7 @@ public class CircleCity extends CityDecorator {
 
     /**
      * draw for the new circle as well as the base city.
+     * @param g Graphics
      */
     @Override
     public void draw(Graphics g) {
@@ -57,6 +58,7 @@ public class CircleCity extends CityDecorator {
 
     /**
      * contains checks the bounds of the city.
+     * @return True if city intersects x and y.
      */
     @Override
     public boolean contains(int x, int y) {
@@ -93,6 +95,7 @@ public class CircleCity extends CityDecorator {
 
     /**
      * gets the center of the base city.
+     * @return Point representing city.
      */
     @Override
     public Point center() {

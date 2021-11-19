@@ -61,6 +61,7 @@ public class GreedyTSP extends Strategy {
     /**
      * Run the greedy TSP algorithm to find a potentially optimal path.
      * @param cityDB The CityDatabase singleton object that will be updated.
+     * @throws java.lang.InterruptedException
      */
     @Override
     public void createPath(CityDatabase cityDB) throws InterruptedException {

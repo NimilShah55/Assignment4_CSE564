@@ -15,7 +15,6 @@ public abstract class Strategy implements Runnable {
         try {
             createPath(cityDB);
         } catch (InterruptedException e) {
-            return;
         }
     }
 }

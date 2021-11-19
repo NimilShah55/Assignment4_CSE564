@@ -329,7 +329,7 @@ public class Workspace extends JPanel implements MouseListener,
         public void actionPerformed(ActionEvent e) {
             pendingNameField.setVisible(false);
             String name = e.getActionCommand();
-            CityDatabase.getInstance().createCity(x, y, name, Color.BLACK, "");
+            CityDatabase.getInstance().createCity(x, y, name, Color.BLACK, "Square");
             StatusBar.getInstance().setStatus("New city " + name + " created.");
             isAddingCity = false;
             try {

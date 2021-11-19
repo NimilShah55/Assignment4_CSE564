@@ -32,6 +32,7 @@ public abstract class CityDecorator extends City{
     
     /**
      * draw - draws the added city.
+     * @param g
      */
     @Override
     public void draw(Graphics g) {
@@ -52,6 +53,7 @@ public abstract class CityDecorator extends City{
     
     /**
      * contains checks the bounds of the added city.
+     * @return 
      */
     @Override
     public boolean contains(int x, int y) {
@@ -89,6 +91,7 @@ public abstract class CityDecorator extends City{
     
     /**
      * gets the center of the base city.
+     * @return Point representing center.
      */
     @Override
     public Point center() {

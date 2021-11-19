@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -113,6 +111,7 @@ public class View extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     panel.setConnectionState(Workspace.ConnectionMode.USER_CONNECT);
+                    panel.setActionState(Workspace.ActionMode.CONNECT);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -276,6 +275,7 @@ public class View extends JFrame {
     /**
      * Saves the current model.
      * @param cities List of cities to save.
+     * @param connects Paths between cities.
      */
     public void save(List<City> cities, Map<City, City> connects) {
         JFileChooser createFile = new JFileChooser(".");

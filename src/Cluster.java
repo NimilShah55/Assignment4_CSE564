@@ -72,7 +72,7 @@ public class Cluster extends Strategy {
 
 
     private Point calculateNewCenter(List<City> cities, ArrayList<City> cityCenter) {
-        if(cityCenter.size() == 0)
+        if(cityCenter.isEmpty())
             return generateCenter(cities);
         int averageX = 0;
         int averageY = 0;
@@ -87,10 +87,10 @@ public class Cluster extends Strategy {
 
 
     private Point generateCenter(List<City> cities){
-        int maxX = Integer.MIN_VALUE;;
+        int maxX = Integer.MIN_VALUE;
         int minX = Integer.MAX_VALUE;
-        int maxY = Integer.MIN_VALUE;;
-        int minY = Integer.MAX_VALUE;;
+        int maxY = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
         for(City city: cities){
             if(city.getX() > maxX)
                 maxX = city.getX();
@@ -154,6 +154,7 @@ public class Cluster extends Strategy {
     /**
      * Run the clustering algorithm to find the three clusters.
      * @param cityDB The CityDatabase singleton object that will be updated.
+     * @throws java.lang.InterruptedException
      */
     @Override
     public void createPath(CityDatabase cityDB) throws InterruptedException {

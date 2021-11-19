@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.awt.Color;
 
 /**
@@ -10,10 +9,10 @@ public class FactoryCity implements Factory {
 
 	private FactoryCity() {}
 	
-/**
- * Get City Instance.
- * @return city instance
- */	
+        /**
+         * Get City Instance.
+         * @return city instance
+         */	
 	public static FactoryCity getFC() {
 		if (fc == null) {
 			fc = new FactoryCity();
@@ -22,23 +21,24 @@ public class FactoryCity implements Factory {
 	}
 	
 	/**
- * Creates city.
- * @param Name of city.
- * @param City x.
- * @param City y.
- * @param Colour of city.
- * @param Type of city.
- * @return city instance
- */	
+         * Creates and returns a new city instance.
+         * @param name Name of city
+         * @param cityX X pos of city
+         * @param cityY Y pos of city
+         * @param size Size of city
+         * @param colour Color of city
+         * @param type Type of city
+         * @return New city instance.
+         */	
 	@Override
 	public City createCity(String name, int cityX, int cityY, String size, Color colour,String type) {
- 		if (type.equals("Square")) {
- 			return new BaseCity(cityX, cityY, name, colour, size);
- 		} else if(type.equals("Circle")) {
- 			return new CircleCity(cityX, cityY, name, colour, size);
- 		}else if(type.equals("Cross")) {
- 			return new CrossCity(cityX, cityY, name, colour, size);
- 		}
-		 return null;
+            if (type.equals("Square")) {
+                    return new BaseCity(cityX, cityY, name, colour, size);
+            } else if(type.equals("Circle")) {
+                    return new CircleCity(cityX, cityY, name, colour, size);
+            }else if(type.equals("Cross")) {
+                    return new CrossCity(cityX, cityY, name, colour, size);
+            }
+            return null;
 	}
 }

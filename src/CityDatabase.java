@@ -42,7 +42,7 @@ public class CityDatabase extends Observable {
      * @param size The size of the city
      */
     public void createCity(int x, int y, String name, Color color, String size) {
-        City newCity = FactoryCity.getFC().createCity(name, y, y, size, color, size);
+        City newCity = FactoryCity.getFC().createCity(name, x, y, size, color, size);
         cities.add(newCity);
         sendNotifications(this);
     }
